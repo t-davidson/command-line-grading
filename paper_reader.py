@@ -91,6 +91,9 @@ def parse_txt(file_path):
     text4 = text2[1]
     text5 = text4.split("Files:")
     comments = text5[0]
+    #Some students write their text in the Submission Field
+    #and others in the Comments section
+    #To solve this the function returns whichever is longest
     if len(submission) > len(comments):
         submission = re.sub('<[^<]+?>', '', submission)
         return submission
