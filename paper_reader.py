@@ -146,6 +146,10 @@ def grade_change(df, net_id):
     specified by their net id in the function call.
 
     Returns a pandas dataframe of grades"""
+    df.grades[df.net_ids==net_id] = raw_input("Enter new grade for "+net_id+": ")
+    name = WEEK + "_graded_updated.p"
+    pickle.dump( df, open( name, "wb"))
+    return df
 
 if __name__ == '__main__':
     files = get_files(PATH, WEEK)
@@ -163,3 +167,5 @@ if __name__ == '__main__':
     name = WEEK + "_graded.p"
     pickle.dump( df, open( name, "wb" ) )
     print df['grades']
+    print "If any grades need to be ammended then load the df \
+    and use the function grade_change to change using net_id"
