@@ -43,8 +43,8 @@ The function grade_change also allows you to modify the grade of a particular st
 as necessary. You can load this function in Python to use it.
 
 To view the grade file simply open Python and enter the following code:
-`import pickle
-import pandas as pd
+`import pickle \
+import pandas as pd \
 df = pickle.load(open('weekX_graded.p', 'rb')) #where X is the week number
 `
 
