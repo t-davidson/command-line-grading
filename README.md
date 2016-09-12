@@ -2,7 +2,7 @@
 Some handy tools for processing essays in a variety of formats and grading them in the command line
 
 # Instructions
-Inputs: 
+Inputs:
 A directory containing essays in docx, pages, pdf, and txt formats.
 Each filename should contain a unique identifier that matches it to a student.
 A csv file containing names and unique identifiers of students.
@@ -24,7 +24,7 @@ and the input of a grade.
 
 If you think the text is corrupted or missing then you can assign a missing value
 for the student and continue grading. The function grade_change can then be used to
-give these students grades after the problem has been investigated (i.e. manually 
+give these students grades after the problem has been investigated (i.e. manually
 looking at their submission files)
 
 When the files have been read a command line interface will then print each
@@ -33,11 +33,21 @@ appear if there is no essay available for a given student.  A counter will show
 the number of essays remaining.
 
 
-When all essays have been assigned a grade the dataframe will be saved as a pickle 
+When all essays have been assigned a grade the dataframe will be saved as a pickle
 object. This can be unpickled using pickle.load and converted to a csv as necessary.
 
 The function grade_change also allows you to modify the grade of a particular student
 as necessary.
 
+## Requirements
+The required python packages can all be installed using pip, i.e.
+`pip install PyPDF2`
 
-
+Packages:
+`PyPDF2`
+`docx`
+`pandas`
+`numpy`
+`copy`
+`string`
+`re`
