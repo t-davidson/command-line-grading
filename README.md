@@ -22,6 +22,11 @@ The script will then automatically read in the files and create a pandas
 dataframe containing columns for the student information, the essay text,
 and the input of a grade.
 
+If you think the text is corrupted or missing then you can assign a missing value
+for the student and continue grading. The function grade_change can then be used to
+give these students grades after the problem has been investigated (i.e. manually 
+looking at their submission files)
+
 When the files have been read a command line interface will then print each
 essay and request you to assign a grade to the essay. A warning will
 appear if there is no essay available for a given student.  A counter will show
