@@ -10,7 +10,7 @@ import string
 import re
 import pickle
 PATH = '../data/'
-WEEK = 'week2'
+WEEK = 'week4'
 MY_STUDENTS = pd.read_csv('../data/intro_students.csv')
 MY_STUDENTS = list(MY_STUDENTS.net_id)
 
