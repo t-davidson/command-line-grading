@@ -76,6 +76,62 @@ def get_model_df(INPUT_PATH, weeks,students, LOOKUP, main_df, ):
         dfs.append(week_df)
     return pd.concat(dfs)
 
+def binary_grade_representation(df):
+    """Takes the final dataframe and adds columns that represent
+    a binary outcome for each grade.
+    e.g. Column 100 = 1 if grade = 100 and 0 if not."""
+    NA = []
+    satisfactory = []
+    good = []
+    excellent = []
+    NG = []
+    grades = list(df['grade'])
+    for g in grades:
+        if g == 0:
+            NA.append(1)
+            satisfactory.append(0)
+            good.append(0)
+            excellent.append(0)
+            NG.append(0)
+        elif g == 80:
+            NA.append(0)
+            satisfactory.append(1)
+            good.append(0)
+            excellent.append(0)
+            NG.append(0)
+        elif g == 90:
+            NA.append(0)
+            satisfactory.append(0)
+            good.append(1)
+            excellent.append(0)
+            NG.append(0)
+        elif g == 100:
+            NA.append(0)
+            satisfactory.append(0)
+            good.append(0)
+            excellent.append(1)
+            NG.append(0)
+        elif g == "Needs Grading":
+            NA.append(0)
+            satisfactory.append(0)
+            good.append(0)
+            excellent.append(0)
+            NG.append(1)
+        else: #If grade is not one of these categories
+            NA.append(0)
+            satisfactory.append(0)
+            good.append(0)
+            excellent.append(0)
+            NG.append(0)
+    df['na'] = NA
+    df['satisfactory'] = satisfactory
+    df['good'] = good
+    df['excellent'] = excellent
+    df['needs_grading'] = NG
+    return df
+
+
+
 if __name__ == '__main__':
     weeks = get_weeks(INPUT_PATH)
     main_df = get_main_grading_table(INPUT_PATH)
@@ -83,4 +139,5 @@ if __name__ == '__main__':
     df = get_model_df(INPUT_PATH, weeks,students, LOOKUP, main_df)
     name = weeks[-1] + '_model_table.p'
     df.index = df['student'] #setting index to net_id
+    df = binary_grade_representation(df)
     pickle.dump( df, open(name, "wb" ) )
