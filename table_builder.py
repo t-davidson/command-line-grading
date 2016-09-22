@@ -34,6 +34,11 @@ def get_colname_by_week(main_df, week, LOOKUP):
     colname = col[0]
     return colname
 
+def get_section_col(main_df):
+    """Blackboard names columns dumb stuff. This returns the name of
+    the column denoting a student's assigned section."""
+    return [x for x in main_df.columns if x.startswith('Section')][0]
+
 def get_week_df(INPUT_PATH, week, students, LOOKUP, main_df):
     """Gets the texts & grades for each student in a given week.
     Returns a dataframe where each row contains a
@@ -44,16 +49,21 @@ def get_week_df(INPUT_PATH, week, students, LOOKUP, main_df):
     texts = get_text(INPUT_PATH, week, files, students)
     essays = []
     grades = []
+    sections = []
+    section_col = get_section_col(main_df)
     for s in students:
         essay = texts[s]
         grade = main_df.loc[s, grade_col]
         essays.append(essay)
         grades.append(grade)
+        section = main_df.loc[s, section_col]
+        sections.append(section)
     df = pd.DataFrame()
     df['student'] = students
     df['essay'] = essays
     df['week'] = int(week.split('week')[1])
     df['grade'] = grades
+    df['section'] = sections
     return df
 
 def get_model_df(INPUT_PATH, weeks,students, LOOKUP, main_df, ):
@@ -72,4 +82,5 @@ if __name__ == '__main__':
     students = list(main_df['Username'])
     df = get_model_df(INPUT_PATH, weeks,students, LOOKUP, main_df)
     name = weeks[-1] + '_model_table.p'
+    df.index = df['student'] #setting index to net_id
     pickle.dump( df, open(name, "wb" ) )
