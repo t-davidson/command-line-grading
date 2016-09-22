@@ -18,7 +18,7 @@ Set path to this directory at top of paper_reader.py to PATH + WEEK.
 e.g. the input files are in ../data/week1
 And set MY_STUDENTS to the path for the csv of student info.
 
-## Running the script
+## Running the command line grader
 Now in the command line run the script using the command `python paper_reader.py`
 The script will then automatically read in the files and create a pandas
 dataframe containing columns for the student information, the essay text,
@@ -48,6 +48,19 @@ import pandas as pd \n
 df = pickle.load(open('weekX_graded.p', 'rb')) #where X is the week number
 `
 
+## To create a modeling dataframe with results
+
+All essays and final grades can be added into a single dataframe using the
+`table_builder.py` file. The INPUT_PATH at the top of the file must be set to the directory containing the papers, where each week's papers are in a
+directory named by week, e.g. `week1, week2, week3, ...`.
+
+When you run `table_builder.py` you will be asked to name the file containing all grade information. This is the file that can be downloaded
+from Blackboard in the Full Grade Center. The code is setup to process grades for ALL students in this file. If you intend to just process one
+class then you can alter the `students` variable at the bottom to point
+to this list of students.
+
+After the code runs a new pickled pandas dataframe will appear in the working directory, where the name is the most recent week followed by
+`_model_table.p`.
 
 ## Requirements
 The required python packages can all be installed using pip, i.e.
@@ -57,6 +70,7 @@ Packages:
 `PyPDF2`
 `docx`
 `pandas`
+`pickle`
 `numpy`
 `copy`
 `string`

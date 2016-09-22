@@ -34,12 +34,11 @@ def get_colname_by_week(main_df, week, LOOKUP):
     colname = col[0]
     return colname
 
-def get_week_df(INPUT_PATH, week, LOOKUP, main_df):
+def get_week_df(INPUT_PATH, week, students, LOOKUP, main_df):
     """Gets the texts & grades for each student in a given week.
     Returns a dataframe where each row contains a
     student, text, week, grade.
     """
-    students = list(main_df['Username'])
     grade_col = get_colname_by_week(main_df, week, LOOKUP)
     files = get_files(INPUT_PATH, week)
     texts = get_text(INPUT_PATH, week, files, students)
@@ -57,18 +56,20 @@ def get_week_df(INPUT_PATH, week, LOOKUP, main_df):
     df['grade'] = grades
     return df
 
-def get_model_df(INPUT_PATH, weeks, LOOKUP, main_df):
+def get_model_df(INPUT_PATH, weeks,students, LOOKUP, main_df, ):
     """Gets the texts & grades for all past weeks and
     concats them into a single dataframe"""
     model_df = pd.DataFrame()
     dfs = []
     for week in weeks:
-        week_df = get_week_df(INPUT_PATH, week, LOOKUP, main_df)
+        week_df = get_week_df(INPUT_PATH, week, students, LOOKUP, main_df, )
         dfs.append(week_df)
     return pd.concat(dfs)
 
 if __name__ == '__main__':
     weeks = get_weeks(INPUT_PATH)
     main_df = get_main_grading_table(INPUT_PATH)
-    df = get_model_df(INPUT_PATH, weeks, LOOKUP, main_df)
-    pickle.dump( df, open( 'week4_model_table.p', "wb" ) )
+    students = list(main_df['Username'])
+    df = get_model_df(INPUT_PATH, weeks,students, LOOKUP, main_df)
+    name = weeks[-1] + '_model_table.p'
+    pickle.dump( df, open(name, "wb" ) )
