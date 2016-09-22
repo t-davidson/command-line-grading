@@ -1,27 +1,11 @@
-import nltk
 import re
 import pandas as pd
 import numpy as np
 import pickle
 import csv
 from textstat.textstat import *
-from vaderSentiment.vaderSentiment import sentiment as VS
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn import metrics
-from sklearn import naive_bayes
-from sklearn import cross_validation
 
-##Defining stopwords list
-stopwords = nltk.corpus.stopwords.words("english")
-stemmer = nltk.stem.porter.PorterStemmer()
 
-def tokenize(page):
-    tokens = page.split()
-    #Remove stopwords
-    #tokens = [t for t in tokens if t not in stopwords]
-    #stem tokens
-    tokens = [stemmer.stem(t) for t in tokens]
-    return tokens
 
 def word_count(paper):
     paper = paper.split()
@@ -115,4 +99,4 @@ if __name__ == '__main__':
     df = df[df.essay != ' ']
     df = df[df.grade != 70]
     stats = get_stats(list(df['essay']))
-    print stats
+    
