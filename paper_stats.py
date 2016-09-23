@@ -1,11 +1,16 @@
+
+"""This script contains a number of functions that find
+different statistics about a given text file. It includes
+functions at the end that run each individual function and
+aggregate the outputs. This can be used to generate feature
+arrays describing each input text"""
+
 import re
 import pandas as pd
 import numpy as np
 import pickle
 import csv
 from textstat.textstat import *
-
-
 
 def word_count(paper):
     paper = paper.split()
@@ -92,10 +97,3 @@ def get_stats(papers):
             stats[i] = round(stats[i], 3)
         paper_stats.append(stats)
     return pd.DataFrame(np.array(paper_stats))
-
-if __name__ == '__main__':
-    df = pickle.load(open('week4_model_table.p', 'rb'))
-    df = df[df.essay != ''] #these conditions filter essays w/o content
-    df = df[df.essay != ' ']
-    df = df[df.grade != 70]
-    stats = get_stats(list(df['essay']))

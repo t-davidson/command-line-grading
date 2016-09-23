@@ -115,17 +115,19 @@ def model_iterator(df, model, K):
     final = kfold(X_new, y, LR_2, 10)
     print final
 
-def prediction(df, to_grade):
+def prediction(df, to_grade, category_to_predict, week):
     data = pd.concat([df, to_grade])
     X_strings = data['essay']
     X = vectorizer.fit_transform(X_strings) # fit vectorizer here
     X = pd.DataFrame(X.toarray())
     X2 = get_stats(list(data['essay']))
     M = pd.concat([X,X2], axis=1)
-    y = data['excellent']
+    y = data[category_to_predict]
     num2predict = - to_grade.shape[0]
-    X_train, X_test = M.iloc[:-num2predict], M.iloc[-num2predict:]
-    y_train, y_test = y.iloc[:-num2predict], y.iloc[-num2predict:]
+    X_test, X_train = M.iloc[:-num2predict], M.iloc[-num2predict:]
+    print X_train.shape, X_test.shape
+    y_test, y_train = y.iloc[:-num2predict], y.iloc[-num2predict:]
+    print y_train.shape, y_test.shape
     print "Running first model on training set"
     LR = linear_model.LogisticRegression(C=10.0, penalty='l1',
     class_weight='balanced').fit(X_train, y_train)
@@ -148,20 +150,32 @@ def prediction(df, to_grade):
     print y_pred2
     pickle.dump(y_pred1, open('y_pred1.p', 'wb'))
     pickle.dump(y_pred2, open('y_pred2.p', 'wb'))
+    output1 = 'p1_' + category_to_predict
+    output2 = 'p2_' + category_to_predict
+    to_grade[output1] = y_pred1
+    to_grade[output2] = y_pred2
+    graded = to_grade
+    name = 'graded_'+category_to_predict+"_"+week
+    pickle.dump(graded, open('graded_wk4.p', 'wb'))
 
 
-
-
-
-
+def get_sections(section_ids):
+    """Takes a list of section ids and returns a
+    dataframe containing the students & essays
+    that need to be graded"""
+    sections = []
+    for i in section_ids:
+        df_section = df[df.section == i]
+        sections.append(df_section)
+    sections_df = pd.concat(sections)
+    to_grade_df = sections_df[sections_df.grade == 66]
+    print to_grade_df.shape[0], " essays to grade."
+    return to_grade_df
 
 if __name__ == '__main__':
     df = pickle.load(open('week4_model_table.p', 'rb'))
-    print df.shape
-    section1 = df[df.section == 202]
-    section2 = df[df.section == 211]
-    sections = pd.concat([section1, section2])
-    to_grade = sections[sections.grade == 66]
+    sections = [202, 211]
+    to_grade = get_sections(sections)
 
     #Now filtering junk from training set
     df = df[df.essay != ''] #these conditions filter essays w/o content
@@ -179,8 +193,7 @@ if __name__ == '__main__':
     model = linear_model.LogisticRegression(C=10.0, penalty='l1',
                                             class_weight='balanced')
 
-
     #####model_iterator(df, model, K)
     #lr_kf = kfold(X, y, model, 10)
     #print lr_kf
-    prediction(df, to_grade)
+    prediction(df, to_grade, 'good', 'week4')

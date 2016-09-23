@@ -1,3 +1,20 @@
+
+"""This script reads in all papers in a specified
+directory and converts them into a pandas dataframe
+containing papers and student information.
+
+It then runs a command line grading tool that allows
+the user to read and grade the papers in turn.
+
+The grades are then output in a new dataframe that
+is saved as a pickle object in the working directory.
+
+The functions below can also be used without the
+command line grader as a way to read papers into a
+dataframe that can then be processed (see table_builder.py)
+for the code that builds on top of this"""
+
+
 from os import listdir
 from os.path import isfile, join
 from unidecode import unidecode
@@ -9,6 +26,8 @@ import copy
 import string
 import re
 import pickle
+
+
 PATH = '../data/'
 WEEK = 'week4'
 MY_STUDENTS = pd.read_csv('../data/intro_students.csv')
