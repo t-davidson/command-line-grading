@@ -144,7 +144,8 @@ def prediction(df, to_grade, category_to_predict, week):
     LR_2 = linear_model.LogisticRegression(C=10.0, penalty='l2',
                                          #regularization l1 since data are sparse
                                         class_weight='balanced')
-    LR_2.fit(X_train_new, y_train)
+    #LR_2.fit(X_train_new, y_train)
+    kfold(X_train_new, y_train, LR_2, 10)
     print "Making predictions based on tuned model..."
     y_pred2 = LR_2.predict(X_test_new)
     print y_pred2
@@ -174,8 +175,9 @@ def get_sections(section_ids):
 
 if __name__ == '__main__':
     df = pickle.load(open('week4_model_table.p', 'rb'))
-    sections = [202, 211]
-    to_grade = get_sections(sections)
+    SECTIONS = [202, 211] #My sections
+    WEEK = 'week4' #Week to grade
+    to_grade = get_sections(SECTIONS)
 
     #Now filtering junk from training set
     df = df[df.essay != ''] #these conditions filter essays w/o content
@@ -196,4 +198,5 @@ if __name__ == '__main__':
     #####model_iterator(df, model, K)
     #lr_kf = kfold(X, y, model, 10)
     #print lr_kf
-    prediction(df, to_grade, 'good', 'week4')
+    PRED_CATEGORY = 'good'
+    prediction(df, to_grade, PRED_CATEGORY , WEEK)
