@@ -118,7 +118,7 @@ def binary_grade_representation(df):
             good.append(0)
             excellent.append(1)
             NG.append(0)
-        elif g == "Needs Grading":
+        elif g == 66: #Needs grading
             NA.append(0)
             satisfactory.append(0)
             good.append(0)
