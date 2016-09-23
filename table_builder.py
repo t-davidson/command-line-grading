@@ -1,4 +1,4 @@
-#########################################################################
+
 """This script reads the working directory and a file containing grade
 information. It combines the grade information with the text of the
 essays in the directory to create a dataframe where each row corresponds
@@ -8,7 +8,7 @@ the grade field to create a binary columns that represent whether or not
 the paper was assigned a particular grade category.
 
 The script returns a pickled version of this dataframe."""
-##########################################################################
+
 
 from os import listdir
 from os.path import isdir, join

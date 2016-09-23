@@ -145,7 +145,7 @@ def prediction(df, to_grade, category_to_predict, week):
                                          #regularization l1 since data are sparse
                                         class_weight='balanced')
     #LR_2.fit(X_train_new, y_train)
-    kfold(X_train_new, y_train, LR_2, 10)
+    kfold(pd.DataFrame(X_train_new), y_train, LR_2, 10)
     print "Making predictions based on tuned model..."
     y_pred2 = LR_2.predict(X_test_new)
     print y_pred2
