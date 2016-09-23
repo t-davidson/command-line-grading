@@ -147,7 +147,12 @@ def prediction(df, to_grade):
     y_pred2 = LR_2.predict(X_test_new)
     print y_pred2
     pickle.dump(y_pred1, open('y_pred1.p', 'wb'))
-    pickle.dump(y_pred2, open('y_pred2.p', 'wb')
+    pickle.dump(y_pred2, open('y_pred2.p', 'wb'))
+
+
+
+
+
 
 
 if __name__ == '__main__':
