@@ -53,7 +53,14 @@ def get_week_df(INPUT_PATH, week, students, LOOKUP, main_df):
     section_col = get_section_col(main_df)
     for s in students:
         essay = texts[s]
+
         grade = main_df.loc[s, grade_col]
+        if grade == "Needs Grading":
+            grade = 66
+        else:
+        #need to convert float then int as can't
+        #directly convert "100.0" into an int!
+            grade = int(float(grade))
         essays.append(essay)
         grades.append(grade)
         section = main_df.loc[s, section_col]
