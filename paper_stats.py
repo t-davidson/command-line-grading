@@ -99,4 +99,3 @@ if __name__ == '__main__':
     df = df[df.essay != ' ']
     df = df[df.grade != 70]
     stats = get_stats(list(df['essay']))
-    
