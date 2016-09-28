@@ -3,6 +3,7 @@ import pickle
 import numpy as np
 import pandas as pd
 import string
+from nltk.util import ngrams
 from gensim import utils
 from gensim.models import doc2vec
 from sklearn.linear_model import LogisticRegression
@@ -20,12 +21,23 @@ def clean_text(text):
     text = ''.join(ch for ch in text if ch not in string.punctuation)
     return text.lower()
 
+def add_bigrams(tokens):
+    bigrams=ngrams(tokens,2)
+    for pair in bigrams:
+        bigram = pair[0]+' '+pair[1]
+        tokens.append(bigram)
+    return tokens
+
 def doc_iterator(df):
     """Parses text documents from the essay field of the
     dataframe, cleans text, tokenizes, and returns it
     as an iterator"""
     for i in range(0, df.shape[0]):
         yield clean_text(df.essay.iloc[i]).split()
+        #tokens = clean_text(df.essay.iloc[i]).split()
+        #tokens = add_bigrams(tokens)
+        #yield tokens
+        ###Runs out of memory if bigrams included!
 
 def tagged_iterator(text_iterator):
     """Processes texts in the doc_iterator and returns
@@ -51,7 +63,32 @@ def build_X(df, model, size):
     for i in range(0, df.shape[0]):
         col = model.docvecs[i]
         X[i] = col
-    return X
+    return pd.DataFrame(X)
+
+def LogisticRegWithSelection(X, y, threshold):
+    #First model to select best features
+    model = linear_model.LogisticRegression(C=1.0, penalty='l1',
+                                        class_weight='balanced')
+    kfold(X, y, model, 5, False)
+    #y_pred = model.predict(X)
+    #print y_pred
+    SFM = SelectFromModel(model, prefit=True,threshold=threshold)
+    X_new = SFM.transform(X)
+    #Second model to run on reduced feature set
+    model2 = linear_model.LogisticRegression(C=1.0, penalty='l2',
+                                        class_weight='balanced')
+    kfold(pd.DataFrame(X_new), y, model2, 5, False)
+    y_pred = model2.predict(X_new)
+    print y_pred
+
+def LogisticRegWithOVR(X, y):
+    ###Performs badly with high dim vector
+    model = linear_model.LogisticRegression(C=10.0, penalty='l1',
+                                            class_weight='balanced')
+    P = OneVsRestClassifier(model)
+    kfold(X, y, P, 5, True)
+    #y_pred = P.predict(X)
+    #print y_pred
 
 if __name__ in '__main__':
     df = pickle.load(open('week4_model_table.p', 'rb'))
@@ -81,39 +118,19 @@ if __name__ in '__main__':
     #    seed(randint(0,100))
     #    tagged = docs_shuffle(tagged)
     #    model.train(tagged)
-    #print model.most_similar('unequal')
+    print model.most_similar('heat')
     model.save('doc2vecmodel')
     #print model.docvecs[767]
     #model.build_vocab(tagged) #I think my code does this by including tagged in model spec
 
-    #num_docs = df.shape[0]
+    #Running multiclass classifier
     X = build_X(df, model, size)
+    section = df.section
+    X.section = section
+
     y = df.grade
+    LogisticRegWithOVR(X, y)
 
-    ###Performs badly with high dim vector
-    model = linear_model.LogisticRegression(C=10.0, penalty='l1',
-                                            class_weight='balanced')
-
-    P = OneVsRestClassifier(model)
-    kfold(pd.DataFrame(X), y, P, 5, True)
-    y_pred = P.predict(X)
-    #print y_pred
-
-    #Single class, excellent
+    #Single class
     y = df.excellent
-    kfold(pd.DataFrame(X), y, model, 5, False)
-    y_pred = model.predict(X)
-    #print y_pred
-
-    SFM = SelectFromModel(model, prefit=True,threshold="10*mean")
-    X_new = SFM.transform(X)
-    print X_new
-
-    print pd.DataFrame(X_new).shape
-    model2 = linear_model.LogisticRegression(C=10.0, penalty='l2',
-                                         #regularization l1 since data are sparse
-                                        class_weight='balanced')
-
-    kfold(pd.DataFrame(X_new), y, model2, 5, False)
-    y_pred = model2.predict(X_new)
-    print y_pred
+    LogisticRegWithSelection(X, y, 'mean')
