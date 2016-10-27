@@ -67,7 +67,7 @@ def get_week_df(INPUT_PATH, week, students, LOOKUP, main_df):
         essay = texts[s]
 
         grade = main_df.loc[s, grade_col]
-        if grade == "Needs Grading":
+        if str(grade).startswith("Needs Grading"):
             grade = 66
         else:
         #need to convert float then int as can't
@@ -158,3 +158,4 @@ if __name__ == '__main__':
     df.index = df['student'] #setting index to net_id
     df = binary_grade_representation(df)
     pickle.dump( df, open(name, "wb" ) )
+    print "Output saved as ", name
